@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">PupChat</string>
+    <string name="no_internet_connection">No internet connection. Please check your network settings.</string>
+    <string name="web_page_error">Failed to load page. Please try again.</string>
+    <string name="grant_permissions_message">Please grant permissions for image, voice, and location to use all app features.</string>
+</resources>

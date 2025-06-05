@@ -1,0 +1,49 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android' // Keep this even if using Java, it's often present
+}
+
+android {
+    namespace 'com.dea.pupchat' // Your package name
+    compileSdk 34 // Target the latest stable API
+
+    defaultConfig {
+        applicationId 'com.dea.pupchat'
+        minSdk 24 // Support a wide range of devices (Android 7.0 Nougat)
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.13.1' // Core AndroidX utilities
+    implementation 'androidx.appcompat:appcompat:1.6.1' // AppCompat for backward compatibility
+    implementation 'com.google.android.material:material:1.12.0' // Material Design components
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4' // ConstraintLayout for flexible UI
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0' // For pull-to-refresh functionality (optional but good for webviews)
+
+    // WebView specific
+    implementation 'androidx.webkit:webkit:1.10.0' // Provides modern WebView APIs
+
+    // Testing dependencies
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}

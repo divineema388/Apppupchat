@@ -1,0 +1,2 @@
+NAME=pupchat
+FROM_GRADLE=TRUE
