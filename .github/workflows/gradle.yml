@@ -1,0 +1,79 @@
+name: Android CI Build
+
+# Controls when the workflow will run
+on:
+  push: # Run on every push to any branch
+    branches: [ main, master, develop ] # Adjust to your main branches
+  pull_request: # Run on pull requests targeting these branches
+    branches: [ main, master, develop ]
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+
+jobs:
+  build:
+    # The type of runner that the job will run on
+    # ubuntu-latest provides a 64-bit Linux environment with Android SDKs pre-installed
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Using v4, a recent stable version
+
+      # 2. Set up JDK. Android builds require Java.
+      #    Android Gradle Plugin 7.0+ needs JDK 11.
+      #    Android Gradle Plugin 8.0+ needs JDK 17.
+      #    Choose a version compatible with your AGP version (check your project's build.gradle)
+      #    Let's assume JDK 17 for modern projects.
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin' # A popular OpenJDK distribution
+
+      # 3. (Optional but good practice) Cache Gradle dependencies and wrapper
+      #    This speeds up subsequent builds.
+      - name: Cache Gradle packages
+        uses: actions/cache@v3 # Using v3, a recent stable version
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # 4. Grant execute permission for gradlew
+      #    The gradlew script needs to be executable.
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      # 5. Build your app (e.g., assembleDebug or assembleRelease)
+      #    'assembleDebug' creates a debug APK.
+      #    'assembleRelease' creates a release APK (may require signing config for a *signed* release).
+      #    For now, let's build a debug APK as it's simpler and doesn't require signing setup.
+      #    You can change this to assembleRelease later.
+      - name: Build with Gradle (Debug)
+        run: ./gradlew assembleDebug
+        # To build a release APK (it will be unsigned if signing is not configured):
+        # run: ./gradlew assembleRelease
+
+      # 6. Upload the generated APK as a build artifact
+      #    The path to the APK depends on the build type (debug/release) and module name ('app').
+      #    For assembleDebug: app/build/outputs/apk/debug/app-debug.apk
+      #    For assembleRelease: app/build/outputs/apk/release/app-release.apk (or app-release-unsigned.apk)
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4 # Using v4, a recent stable version
+        with:
+          name: app-debug # Name of the artifact that will appear in GitHub
+          path: app/build/outputs/apk/debug/app-debug.apk # Path to the APK
+          # If you built a release APK, use:
+          # name: app-release
+          # path: app/build/outputs/apk/release/app-release.apk
+
+    # (Optional) If you build a release APK and want to upload it:
+    # - name: Upload Release APK
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: app-release
+    #     path: app/build/outputs/apk/release/app-release.apk # Ensure this path is correct for your build
+
