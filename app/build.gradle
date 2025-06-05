@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'com.dea.pupchat' // Your package name
+    namespace 'com.dealabs.pupchat' // Your package name
     compileSdk 34 // Target the latest stable API
 
     defaultConfig {
